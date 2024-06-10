@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    .selectContainer {position: relative;display: inline-block; }
+    .selectContainer .selectBoxWrap { width: 150px; padding: 10px; border: 1px solid #ddd;  border-radius: 5px;background-color: #fff;  cursor: pointer;}
+    .selectContainer .selectBoxWrap:after {  content: '▼'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);}
+    .selectContainer .optionsContainer { display: none;  position: absolute; top: 100%; left: 0; width: 100%; border: 1px solid #ddd;  border-radius: 5px; background-color: #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); z-index: 1000; }
+    .selectContainer .optionsContainer .option { padding: 10px; border-bottom: 1px solid #ddd;  cursor: pointer;}
+    .selectContainer .optionsContainer .option:last-child { border-bottom: none; }
+    .selectContainer .optionsContainer .option:hover {  background-color: #f0f0f0;  }
+    </style>
+</head>
+<body>
+    <div class="selectContainer">
+        <div class="selectBoxWrap" onclick="toggleOptions()">상품유형</div>
+        <div class="optionsContainer" id="optionsList">
+            <div class="option">높은 가격순</div>
+            <div class="option">낮은 가격순</div>
+            <div class="option">인기순</div>
+            <div class="option">리뷰 많은순</div>
+            <div class="option">스크랩순</div>
+        </div>
+    </div>
+
+    <script>
+        function toggleOptions() {
+            document.getElementById("optionsList").style.display = document.getElementById("optionsList").style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function(event) {
+            const selectContainer = document.querySelector('.selectContainer');
+            if (!selectContainer.contains(event.target)) {
+                document.getElementById("optionsList").style.display = 'none';
+            }
+        });
+
+        const options = document.querySelectorAll('.option');
+        options.forEach(function(option) {
+            option.addEventListener('click', function() {
+                document.querySelector('.selectBoxWrap').textContent = this.textContent;
+                options.forEach(function(opt) {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                document.getElementById("options").style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

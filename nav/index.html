@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    li {list-style-type: none; }
+    a { color: inherit; text-decoration: none; }
+    .nav {  top: 0; position: fixed;  width: 100%; background-color: white; box-shadow: rgba(50, 50, 93, 0.25) 0px 8px 13px -5px,rgba(0, 0, 0, 0.3) 0px 8px 16px -8px; display: flex; justify-content: center;}
+    .nav__menu { display: flex; }
+    .nav__menu > li { padding: 1.5rem;}
+    .nav__menu--focused {  color: red;}
+    .marker { content: "";position: absolute;bottom: 1.2rem;left: 0;width: 0;height: 3px;background-color: red;transition: 0.2s;visibility: hidden; }
+    section {text-align: center;font-size: 20rem;height: 100vh;color: white;}
+    #one { background: palegoldenrod;  }
+    #two {background: palegreen;}
+    #three { background: paleturquoise;}
+    #four {background: palevioletred;}
+</style>
+<body>
+    
+    <nav id="nav" class="nav">
+        <ul class="nav__menu">
+            <li><a href="#one" class="nav__menu--focused">ONE</a></li>
+            <li><a href="#two">TWO</a></li>
+            <li><a href="#three">THREE</a></li>
+            <li><a href="#four">FOUR</a></li>
+            <div class="marker"></div>
+        </ul>
+    </nav>
+    <section id="one">one</section>
+    <section id="two">two</section>
+    <section id="three">three</section>
+    <section id="four">four</section>
+
+    <script>
+        const marker = document.querySelector(".marker");
+
+        function setMarker(e) {
+            marker.style.left = e.offsetLeft + "px";
+            marker.style.width = e.offsetWidth + "px";
+            marker.style.visibility = 'visible'; // Make marker visible
+        }
+
+        const sections = document.querySelectorAll("section");
+        const menus = document.querySelectorAll(".nav__menu > li > a");
+
+        function updateMarkerAndFocus() {
+            let current = "";
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+
+                if (window.scrollY >= sectionTop - sectionHeight / 3) {
+                    current = section.getAttribute("id");
+                }
+            });
+
+            menus.forEach(menu => {
+                menu.classList.remove("nav__menu--focused");
+                if (menu.getAttribute("href").includes(current)) {
+                    menu.classList.add("nav__menu--focused");
+                    setMarker(menu);
+                }
+            });
+        }
+
+        window.addEventListener("scroll", updateMarkerAndFocus);
+
+        window.addEventListener("load", () => {
+            marker.style.visibility = 'hidden';
+            window.scrollTo(0, 0);
+            setTimeout(() => {
+                const focusedMenu = document.querySelector(".nav__menu--focused");
+                setMarker(focusedMenu);
+            }, 100);
+        });
+    </script>
+
+</body>
+</html>

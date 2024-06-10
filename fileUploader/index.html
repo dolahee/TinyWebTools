@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <img id="uploadImage" src="/fileUploader/booke.jpg" style="width: 30%;" alt="업로드 이미지" onclick="document.getElementById('fileInput').click();">
+        <input hidden type="file" id="fileInput" accept="image/*">
+      </div>
+      
+      <!-- 스크립트 시작 -->
+      
+      <script>
+    // `fileInput`에 이벤트 리스너를 추가하여 파일 선택 상태가 변경될 때 함수 호출
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+      // 사용자가 선택한 첫 번째 파일을 가져옴
+      const file = event.target.files[0];
+      
+      // 선택된 파일이 이미지 파일인지 확인 (파일 타입이 'image/'로 시작하는지 체크)
+      if (file && file.type.startsWith('image/')) {
+        
+        // 파일을 읽기 위한 FileReader 객체 생성
+        const reader = new FileReader();
+        
+        // 파일 로딩이 완료되었을 때 실행될 이벤트 핸들러 설정
+        reader.onload = function(e) {
+          // 파일의 데이터 URL이 로드되면 이미지 태그의 소스로 설정하여 이미지 표시
+          document.getElementById('uploadImage').src = e.target.result;
+        };
+        
+        // FileReader로 파일의 데이터 URL 읽기 시작
+        reader.readAsDataURL(file);
+      }
+    });
+      </script>
+</body>
+</html>

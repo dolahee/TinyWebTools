@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Picker</title>
+    <style>
+        .timepicker {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .timepicker select {
+            color: rgb(0, 0, 0);
+            border: none;
+            font-size: 2rem;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            text-align-last: center;
+        }
+        .timepicker select::-ms-expand {
+            display: none;
+        }
+        .time {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .time p {
+            margin: 0;
+            padding-right: 10px;
+        }
+        .remove {
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="timepicker">
+        <select id="hours"></select>
+        <span>:</span>
+        <select id="minutes"></select>
+    </div>
+    
+    <div class="timepicker">
+        <select id="hours2"></select>
+        <span>:</span>
+        <select id="minutes2"></select>
+    </div>
+    
+    <button class="addBtn">추가</button>
+
+    <div class="timeWrap">
+
+    </div>
+    <script>
+        const hoursSelect = document.getElementById('hours');
+        const minutesSelect = document.getElementById('minutes');
+        const hoursSelect2 = document.getElementById('hours2');
+        const minutesSelect2 = document.getElementById('minutes2');
+        const addBtn = document.querySelector('.addBtn');
+        const timeWrap = document.querySelector('.timeWrap');
+
+        // 시간 옵션 추가
+        for (let i = 0; i < 24; i++) {
+            const hour = document.createElement('option');
+            hour.value = i < 10 ? '0' + i : i;
+            hour.textContent = i < 10 ? '0' + i : i;
+            hoursSelect.appendChild(hour);
+            hoursSelect2.appendChild(hour.cloneNode(true));
+        }
+
+        // 분 옵션 추가 (00과 30만)
+        ['00', '30'].forEach(min => {
+            const minute = document.createElement('option');
+            minute.value = min;
+            minute.textContent = min;
+            minutesSelect.appendChild(minute);
+            minutesSelect2.appendChild(minute.cloneNode(true));
+        });
+
+        // minutes2를 30분으로 시작하게 설정
+        minutesSelect2.value = '30';
+
+        function updateDisabledOptions() {
+            const selectedHour = parseInt(hoursSelect.value, 10);
+            const selectedMinute = parseInt(minutesSelect.value, 10);
+
+            // hours2 옵션 업데이트
+            for (let i = 0; i < hoursSelect2.options.length; i++) {
+                const hourOption = hoursSelect2.options[i];
+                const hourValue = parseInt(hourOption.value, 10);
+                if (hourValue < selectedHour) {
+                    hourOption.disabled = true;
+                } else {
+                    hourOption.disabled = false;
+                }
+            }
+
+            // minutes2 옵션 업데이트
+            for (let i = 0; i < minutesSelect2.options.length; i++) {
+                const minuteOption = minutesSelect2.options[i];
+                const minuteValue = parseInt(minuteOption.value, 10);
+                if (selectedHour === parseInt(hoursSelect2.value, 10)) {
+                    if (minuteValue <= selectedMinute) {
+                        minuteOption.disabled = true;
+                    } else {
+                        minuteOption.disabled = false;
+                    }
+                } else {
+                    minuteOption.disabled = false;
+                }
+            }
+        }
+
+        hoursSelect.addEventListener('change', updateDisabledOptions);
+        minutesSelect.addEventListener('change', updateDisabledOptions);
+        hoursSelect2.addEventListener('change', updateDisabledOptions);
+        
+        // 초기화 시 시간과 분 옵션 업데이트
+        updateDisabledOptions();
+
+        // 추가 버튼 클릭 이벤트
+        addBtn.addEventListener('click', () => {
+            const startHour = hoursSelect.value;
+            const startMinute = minutesSelect.value;
+            const endHour = hoursSelect2.value;
+            const endMinute = minutesSelect2.value;
+
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'time';
+
+            const timeParagraph = document.createElement('p');
+            timeParagraph.textContent = `${startHour}:${startMinute} ~ ${endHour}:${endMinute}`;
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'remove';
+            removeButton.textContent = 'X';
+            removeButton.addEventListener('click', () => {
+                timeWrap.removeChild(timeDiv);
+            });
+
+            timeDiv.appendChild(timeParagraph);
+            timeDiv.appendChild(removeButton);
+            timeWrap.appendChild(timeDiv);
+        });
+    </script>
+</body>
+</html>
